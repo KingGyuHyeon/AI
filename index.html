@@ -6,47 +6,61 @@
   <title>AI가 요약하는 하루</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .accessibility-bar {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 50;
+    .active-category { background-color: #3b82f6; color: white; }
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      display: none; align-items: center; justify-content: center;
+      z-index: 50; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .modal-overlay.show { display: flex; opacity: 1; }
+    .modal-content {
+      background: white; padding: 2rem; border-radius: 1rem;
+      width: 90%; max-width: 500px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      animation: popup 0.25s ease-out forwards;
+      position: relative;
+    }
+    @keyframes popup { to { transform: scale(1); } }
+
+    .close-button {
+      position: absolute; top: 1rem; right: 1rem;
+      font-size: 1.1rem; font-weight: bold;
+      color: #1f2937;
+      background: #f3f4f6;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+    }
+
+    .high-contrast { background-color: #000 !important; color: #fff !important; }
+    .high-contrast a { color: #00f !important; }
+
+    #settings-button {
+      position: fixed; top: 20px; right: 20px; z-index: 50;
+      background-color: #6b21a8; color: white;
+      border-radius: 50%; width: 50px; height: 50px;
+      font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+
+    #settings-menu {
+      position: fixed; top: 80px; right: 20px;
       background-color: #fef3c7;
       border: 2px solid #facc15;
-      border-radius: 0.75rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      padding: 1rem 1.25rem;
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-    }
-
-    .modal-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 1rem;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
-
-    .active-category {
-      background-color: #3b82f6;
-      color: white;
+      border-radius: 1rem; padding: 1rem;
+      display: none; z-index: 50;
     }
   </style>
 </head>
 <body class="bg-gradient-to-b from-blue-50 to-white text-gray-800 text-[17px]">
+  <!-- 설정 버튼 -->
+  <div id="settings-button" onclick="toggleSettings()">⚙️</div>
+  <div id="settings-menu">
+    <button onclick="changeFontSize(-1)" class="px-3 py-1 bg-yellow-500 text-white rounded mr-2">글자 작게</button>
+    <button onclick="changeFontSize(1)" class="px-3 py-1 bg-yellow-600 text-white rounded mr-2">글자 크게</button>
+    <button onclick="toggleContrast()" class="px-3 py-1 bg-black text-yellow-300 rounded">고대비</button>
+  </div>
+
   <div class="max-w-screen-xl mx-auto py-10 px-8">
     <!-- 헤더 -->
     <header class="flex flex-col lg:flex-row justify-between items-center mb-10 border-b pb-6">
@@ -56,152 +70,156 @@
       </div>
     </header>
 
-    <!-- 종합 요약 카드 -->
+    <!-- 오늘의 요약 카드 -->
     <section class="bg-blue-100 border-l-4 border-blue-600 p-6 rounded-xl mb-10 shadow">
       <h2 class="text-2xl font-semibold text-blue-900 mb-2">📌 오늘의 요약</h2>
       <p class="text-gray-700 text-lg leading-relaxed">
         오늘은 전국이 흐리고, 환율은 상승세를 보이며 금리 인상이 주목됩니다. 강풍 주의보와 함께 미세먼지 농도도 높은 편입니다.
       </p>
     </section>
-
-    <!-- 날씨 + 경제 카드 -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+    <!-- 메인 카드 영역 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- 왼쪽: 날씨 + 경제 -->
-      <div class="lg:col-span-1 flex flex-col gap-8">
-        <!-- 날씨 카드 -->
+      <div class="flex flex-col gap-6">
+        <!-- 날씨 카드 (재배치된 구조) -->
         <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-blue-400">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-bold text-blue-700">🌦️ 날씨 정보</h3>
-            <button class="text-sm text-blue-600 hover:underline">AI 요약</button>
+          <h3 class="text-xl font-bold text-blue-700 mb-4">🌦️ 날씨 정보</h3>
+          <p class="text-5xl font-semibold mb-4">18°C</p>
+          
+          <div class="grid grid-cols-2 gap-2 text-base mb-2">
+            <div>🌡️ 습도: 80%</div>
+            <div>🌬️ 풍향: 북동</div>
+            <div>💨 풍속: 3.5m/s</div>
+            <div>🌧️ 강수확률: 60%</div>
           </div>
-          <p class="text-3xl font-semibold mb-3">18°C</p>
-          <ul class="text-base space-y-1">
-            <li>🌡️ 습도: 80%</li>
-            <li>💨 풍속: 3.5m/s</li>
-            <li>🌬️ 풍향: 북동</li>
-            <li>🌧️ 강수확률: 60%</li>
-          </ul>
-          <p class="mt-3 text-red-600 text-sm font-semibold">⚠️ 강풍주의보</p>
+
+          <p class="text-red-600 text-sm font-semibold mb-4">⚠️ 강풍주의보</p>
+
+          <button class="mt-2 text-sm text-blue-600 hover:underline">AI 요약</button>
         </div>
 
         <!-- 경제 카드 -->
         <div class="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-green-400">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-bold text-green-700">💰 경제 지표</h3>
-            <button class="text-sm text-green-600 hover:underline">AI 요약</button>
-          </div>
-          <ul class="text-lg space-y-3">
-            <li class="flex justify-between">
-              <span>💱 USD/KRW</span>
-              <span class="text-red-600 font-bold">₩1,467.60 ▲ 3.2</span>
-            </li>
-            <li class="flex justify-between">
-              <span>📊 기준금리</span>
-              <span class="text-blue-600 font-bold">3.50%</span>
-            </li>
-            <li class="flex justify-between">
-              <span>🧾 소비자물가지수</span>
-              <span class="text-red-500 font-bold">+2.8%</span>
-            </li>
+          <h3 class="text-xl font-bold text-green-700 mb-4">💰 경제 지표</h3>
+          <ul class="text-base space-y-2">
+            <li class="flex justify-between"><span>💱 USD/KRW</span><span class="text-red-600 font-bold">₩1,467.60 ▲ 3.2</span></li>
+            <li class="flex justify-between"><span>📊 기준금리</span><span class="text-blue-600 font-bold">3.50%</span></li>
+            <li class="flex justify-between"><span>🧾 소비자물가지수</span><span class="text-red-500 font-bold">+2.8%</span></li>
           </ul>
         </div>
       </div>
-            <!-- 오른쪽: 뉴스 섹션 -->
-      <div class="lg:col-span-2">
-        <!-- 카테고리 필터 버튼 -->
-        <div class="flex gap-3 mb-6 flex-wrap" id="category-buttons">
-          <button onclick="filterCategory(this, '전체')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-medium hover:bg-blue-200">전체</button>
-          <button onclick="filterCategory(this, '정치')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-medium hover:bg-blue-200">정치</button>
-          <button onclick="filterCategory(this, '경제')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-medium hover:bg-blue-200">경제</button>
-          <button onclick="filterCategory(this, '사회')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-medium hover:bg-blue-200">사회</button>
-          <button onclick="filterCategory(this, '연예')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-medium hover:bg-blue-200">연예</button>
-          <button onclick="filterCategory(this, '스포츠')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-medium hover:bg-blue-200">스포츠</button>
+
+      <!-- 오른쪽: 뉴스 영역 전체 박스 -->
+      <section class="lg:col-span-2 bg-white rounded-2xl shadow-md p-6">
+        <!-- 카테고리 필터 -->
+        <div class="flex flex-wrap gap-3 mb-6" id="category-buttons">
+          <button onclick="filterCategory(this, '전체')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200">전체</button>
+          <button onclick="filterCategory(this, '정치')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200">정치</button>
+          <button onclick="filterCategory(this, '경제')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200">경제</button>
+          <button onclick="filterCategory(this, '사회')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200">사회</button>
+          <button onclick="filterCategory(this, '연예')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200">연예</button>
+          <button onclick="filterCategory(this, '스포츠')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200">스포츠</button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="news-list">
-  <!-- 정치 -->
-  <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-indigo-400 cursor-pointer" data-category="정치"
-    onclick="openModal('정치 개혁 법안 통과', '국회는 오늘 정치 개혁을 위한 핵심 법안을 통과시켰습니다. 정당 구조 개편이 핵심입니다.', '★★★★☆', 'https://news.example.com/politics')">
-    <h3 class="text-lg font-bold text-indigo-700 mb-2">📰 정치 개혁 법안 통과</h3>
-    <p class="text-sm text-gray-700">정당 구조 개편을 골자로 하는 정치 개혁 법안이 오늘 국회에서 통과되었습니다.</p>
-    <p class="text-xs text-gray-500 mt-2">출처: 정치일보 | 신뢰도: ★★★★☆</p>
+        <!-- 뉴스 카드 리스트 -->
+        <div class="flex flex-col gap-6" id="news-list">
+          <div class="bg-white rounded-xl shadow p-5 border-l-4 border-indigo-400 cursor-pointer" data-category="정치"
+            onclick="showModal('정치 개혁 법안 통과', '정당 구조 개편을 위한 정치 개혁 법안이 국회에서 통과되었습니다.', '★★★★☆', '#')">
+            <h3 class="text-lg font-bold text-indigo-700 mb-2">📰 정치 개혁 법안 통과</h3>
+            <p class="text-base text-gray-700">정당 구조 개편을 골자로 하는 정치 개혁 법안이 오늘 국회에서 통과되었습니다.</p>
+          </div>
+          <div class="bg-white rounded-xl shadow p-5 border-l-4 border-indigo-400 cursor-pointer" data-category="경제"
+            onclick="showModal('소비자물가 2.8% 상승', '5월 소비자물가지수는 전년 대비 2.8% 상승했습니다.', '★★★★☆', '#')">
+            <h3 class="text-lg font-bold text-indigo-700 mb-2">📊 소비자물가 2.8% 상승</h3>
+            <p class="text-base text-gray-700">5월 소비자물가지수는 전년 대비 2.8% 상승했습니다.</p>
+          </div>
+
+          <div class="bg-white rounded-xl shadow p-5 border-l-4 border-indigo-400 cursor-pointer" data-category="사회"
+            onclick="showModal('대중교통 요금 인상', '서울시는 7월부터 대중교통 기본 요금을 150원 인상한다고 발표했습니다.', '★★★☆☆', '#')">
+            <h3 class="text-lg font-bold text-indigo-700 mb-2">🚇 대중교통 요금 인상</h3>
+            <p class="text-base text-gray-700">서울시는 7월부터 대중교통 기본 요금을 150원 인상한다고 발표했습니다.</p>
+          </div>
+
+          <div class="bg-white rounded-xl shadow p-5 border-l-4 border-indigo-400 cursor-pointer" data-category="연예"
+            onclick="showModal('톱스타 결혼 발표', '국민 배우 A씨가 공식 입장을 통해 결혼 소식을 전했습니다.', '★★★☆☆', '#')">
+            <h3 class="text-lg font-bold text-indigo-700 mb-2">🎬 톱스타 결혼 발표</h3>
+            <p class="text-base text-gray-700">배우 A씨가 오늘 팬카페를 통해 결혼 소식을 직접 전했습니다.</p>
+          </div>
+
+          <div class="bg-white rounded-xl shadow p-5 border-l-4 border-indigo-400 cursor-pointer" data-category="스포츠"
+            onclick="showModal('야구 대표팀 승리', '한국 야구 대표팀이 일본과의 경기에서 5:2로 승리했습니다.', '★★★★★', '#')">
+            <h3 class="text-lg font-bold text-indigo-700 mb-2">⚾ 야구 대표팀 승리</h3>
+            <p class="text-base text-gray-700">한국 야구 대표팀이 일본과의 경기에서 5:2로 승리했습니다.</p>
+          </div>
+        </div>
+      </section>
+    </div> <!-- 카드 구성 끝 -->
   </div>
 
-  <!-- 경제 -->
-  <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-indigo-400 cursor-pointer" data-category="경제"
-    onclick="openModal('소비자물가 2.8% 상승', '5월 소비자물가지수는 전년 대비 2.8% 상승했습니다. 에너지 가격 안정이 영향을 주었습니다.', '★★★★☆', 'https://news.example.com/economy')">
-    <h3 class="text-lg font-bold text-indigo-700 mb-2">📰 소비자물가 2.8% 상승</h3>
-    <p class="text-sm text-gray-700">통계청에 따르면 5월 소비자물가지수는 전년 대비 2.8% 상승했습니다.</p>
-    <p class="text-xs text-gray-500 mt-2">출처: 통계청 | 신뢰도: ★★★★☆</p>
-  </div>
-
-  <!-- 사회 -->
-  <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-indigo-400 cursor-pointer" data-category="사회"
-    onclick="openModal('대중교통 요금 인상', '서울시가 대중교통 기본 요금을 150원 인상한다고 발표했습니다. 7월부터 적용됩니다.', '★★★☆☆', 'https://news.example.com/society')">
-    <h3 class="text-lg font-bold text-indigo-700 mb-2">📰 대중교통 요금 인상</h3>
-    <p class="text-sm text-gray-700">서울시가 7월부터 대중교통 기본 요금을 150원 인상한다고 발표했습니다.</p>
-    <p class="text-xs text-gray-500 mt-2">출처: 시민일보 | 신뢰도: ★★★☆☆</p>
-  </div>
-
-  <!-- 연예 -->
-  <div class="bg-white rounded-2xl shadow-md p-6 border-l-4 border-indigo-400 cursor-pointer" data-category="연예"
-    onclick="openModal('톱스타 결혼 발표', '국민 배우 A씨가 공식 입장을 통해 결혼 소식을 전했습니다. 팬들의 축하가 이어지고 있습니다.', '★★★☆☆', 'https://news.example.com/entertainment')">
-    <h3 class="text-lg font-bold text-indigo-700 mb-2">📰 톱스타 결혼 발표</h3>
-    <p class="text-sm text-gray-700">배우 A씨가 오늘 팬카페를 통해 결혼 소식을 직접 전했습니다.</p>
-    <p class="text-xs text-gray-500 mt-2">출처: 연예투데이 | 신뢰도: ★★★☆☆</p>
-  </div>
-</div>
-
-
-  <!-- 모달 -->
-  <div id="news-modal" class="modal-overlay hidden">
-    <div class="modal-content relative">
-      <button onclick="closeModal()" class="absolute top-2 right-3 text-gray-400 text-2xl font-bold">✖</button>
+  <!-- 뉴스 모달 -->
+  <div id="news-modal" class="modal-overlay">
+    <div class="modal-content">
+      <span class="close-button" onclick="closeModal()">닫기</span>
       <h3 id="modal-title" class="text-xl font-bold text-blue-800 mb-2"></h3>
       <p id="modal-summary" class="text-gray-700 mb-3"></p>
-      <p id="modal-reliability" class="text-sm text-gray-500 mb-4"></p>
-      <a id="modal-link" href="#" target="_blank" class="text-blue-600 hover:underline text-sm">원문 보기</a>
+      <p id="modal-reliability" class="text-sm text-gray-500 mb-3"></p>
+      <a id="modal-link" href="#" target="_blank" class="text-blue-600 hover:underline text-sm block mb-4">원문 보기</a>
     </div>
   </div>
 
   <!-- 스크립트 -->
   <script>
     function filterCategory(button, category) {
-      const buttons = document.querySelectorAll("#category-buttons button");
-      buttons.forEach(btn => btn.classList.remove("active-category"));
-      if (button) button.classList.add("active-category");
+      document.querySelectorAll("#category-buttons button").forEach(btn =>
+        btn.classList.remove("bg-blue-500", "text-white")
+      );
+      button.classList.add("bg-blue-500", "text-white");
 
-      const cards = document.querySelectorAll('[data-category]');
-      cards.forEach(card => {
-        card.style.display = (category === '전체' || card.dataset.category === category) ? 'block' : 'none';
+      document.querySelectorAll('[data-category]').forEach(card => {
+        card.style.display = category === '전체' || card.dataset.category === category ? 'block' : 'none';
       });
+      closeModal();
     }
 
-    function openModal(title, summary, reliability, link) {
+    function showModal(title, summary, reliability, link) {
+      const modal = document.getElementById('news-modal');
+      modal.classList.add('show');
+      modal.style.display = 'flex';
       document.getElementById('modal-title').textContent = title;
       document.getElementById('modal-summary').textContent = summary;
       document.getElementById('modal-reliability').textContent = `신뢰도: ${reliability}`;
       document.getElementById('modal-link').href = link;
-
-      document.getElementById('news-modal').classList.remove('hidden');
-      document.getElementById('news-modal').style.display = 'flex';
     }
 
     function closeModal() {
-      document.getElementById('news-modal').style.display = 'none';
+      const modal = document.getElementById('news-modal');
+      modal.classList.remove('show');
+      setTimeout(() => modal.style.display = 'none', 200);
     }
+
+    function changeFontSize(delta) {
+      const html = document.querySelector("html");
+      const current = parseFloat(getComputedStyle(html).fontSize);
+      html.style.fontSize = (current + delta) + "px";
+    }
+
+    function toggleContrast() {
+      document.body.classList.toggle("high-contrast");
+    }
+
+    function toggleSettings() {
+      const menu = document.getElementById("settings-menu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeModal();
+    });
 
     window.onload = () => {
       const firstBtn = document.querySelector("#category-buttons button");
       filterCategory(firstBtn, '전체');
     };
   </script>
-
-  <!-- 접근성 도구 (하단 고정) -->
-  <div class="accessibility-bar">
-    <button class="px-3 py-1 bg-yellow-500 text-white rounded-md">글자 작게</button>
-    <button class="px-3 py-1 bg-yellow-600 text-white rounded-md">글자 크게</button>
-  </div>
-
 </body>
 </html>
