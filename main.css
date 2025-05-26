@@ -10,26 +10,12 @@
   text-decoration: underline !important;
 }
 
-/* 버튼 색상 강제 적용 */
+/* 버튼 스타일 */
 .high-contrast button,
 .high-contrast .btn {
   background-color: #111 !important;
   color: #ffff00 !important;
-  border: 1px solid #ffff00 !important;
-}
-
-/* 카드 요소 전체를 포함한 구성 */
-.high-contrast .bg-white,
-.high-contrast .bg-blue-100,
-.high-contrast .bg-yellow-500,
-.high-contrast .bg-yellow-600,
-.high-contrast .rounded-xl,
-.high-contrast .shadow,
-.high-contrast .shadow-md,
-.high-contrast .shadow-lg {
-  background-color: #000 !important;
-  color: #ffff00 !important;
-  border-color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
 }
 
 /* 입력창 */
@@ -37,12 +23,41 @@
 .high-contrast textarea {
   background-color: #000 !important;
   color: #ffff00 !important;
-  border: 1px solid #ffff00 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+/* 카드 및 섹션 배경 + 테두리 강조 */
+.high-contrast .bg-white,
+.high-contrast .bg-blue-100,
+.high-contrast .bg-yellow-500,
+.high-contrast .bg-yellow-600,
+.high-contrast .shadow,
+.high-contrast .shadow-md,
+.high-contrast .shadow-lg,
+.high-contrast .rounded-xl,
+.high-contrast .rounded-2xl,
+.high-contrast section,
+.high-contrast .card,
+.high-contrast .p-5,
+.high-contrast .p-6 {
+  background-color: #000 !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffffff !important;
 }
 
 /* 제목 강조 */
 .high-contrast h1,
 .high-contrast h2,
-.high-contrast h3 {
+.high-contrast h3,
+.high-contrast h4 {
+  color: #ffff00 !important;
+}
+
+/* 강조 텍스트 (주의, 온도 등) */
+.high-contrast .text-red-600,
+.high-contrast .text-blue-600,
+.high-contrast .text-gray-700,
+.high-contrast .text-indigo-700,
+.high-contrast .text-green-700 {
   color: #ffff00 !important;
 }
