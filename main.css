@@ -1,11 +1,12 @@
-/* 전체 고대비 배경과 텍스트 색상 */
+/* 고대비 전체 배경과 텍스트 색상 */
 .high-contrast {
   background-color: #000 !important;
   color: #fefefe !important;
 }
 
-/* 카드 및 박스 강조: 흰색 테두리 + 둥근 모서리 */
+/* 카드와 섹션 박스 강조 */
 .high-contrast .bg-white,
+.high-contrast .bg-blue-100,
 .high-contrast .shadow,
 .high-contrast .rounded-xl,
 .high-contrast .rounded-2xl,
@@ -18,7 +19,7 @@
   border-radius: 1rem !important;
 }
 
-/* 요약 카드도 강조 */
+/* 왼쪽 테두리 강조 */
 .high-contrast .border-l-4 {
   border-left: 4px solid #ffffff !important;
 }
@@ -29,14 +30,14 @@
   text-decoration: underline !important;
 }
 
-/* 버튼 강조 */
+/* 버튼 */
 .high-contrast button {
   background-color: #111 !important;
   color: #ffff00 !important;
   border: 2px solid #ffff00 !important;
 }
 
-/* 입력창 강조 */
+/* 입력창 */
 .high-contrast input,
 .high-contrast textarea {
   background-color: #000 !important;
@@ -44,7 +45,7 @@
   border: 2px solid #ffff00 !important;
 }
 
-/* 텍스트 색상 통일 */
+/* 일반 텍스트 */
 .high-contrast h1,
 .high-contrast h2,
 .high-contrast h3,
@@ -53,4 +54,13 @@
 .high-contrast span,
 .high-contrast li {
   color: #ffffee !important;
+}
+
+/* 제목에 Tailwind 색상 클래스 덮기 */
+.high-contrast .text-blue-900,
+.high-contrast .text-indigo-700,
+.high-contrast .text-green-700,
+.high-contrast .text-gray-700,
+.high-contrast .text-red-600 {
+  color: #ffffff !important;
 }
