@@ -1,66 +1,67 @@
-/* 고대비 전체 배경과 텍스트 색상 */
 .high-contrast {
-  background-color: #000 !important;
-  color: #fefefe !important;
-}
-
-/* 카드와 섹션 박스 강조 */
-.high-contrast .bg-white,
-.high-contrast .bg-blue-100,
-.high-contrast .shadow,
-.high-contrast .rounded-xl,
-.high-contrast .rounded-2xl,
-.high-contrast .p-5,
-.high-contrast .p-6,
-.high-contrast section {
-  background-color: #000 !important;
-  color: #fefefe !important;
-  border: 2px solid #ffffff !important;
-  border-radius: 1rem !important;
-}
-
-/* 왼쪽 테두리 강조 */
-.high-contrast .border-l-4 {
-  border-left: 4px solid #ffffff !important;
-}
-
-/* 링크 강조 */
-.high-contrast a {
-  color: #00ffff !important;
-  text-decoration: underline !important;
-}
-
-/* 버튼 */
-.high-contrast button {
-  background-color: #111 !important;
-  color: #ffff00 !important;
-  border: 2px solid #ffff00 !important;
-}
-
-/* 입력창 */
-.high-contrast input,
-.high-contrast textarea {
-  background-color: #000 !important;
-  color: #ffff00 !important;
-  border: 2px solid #ffff00 !important;
-}
-
-/* 일반 텍스트 */
-.high-contrast h1,
-.high-contrast h2,
-.high-contrast h3,
-.high-contrast h4,
-.high-contrast p,
-.high-contrast span,
-.high-contrast li {
-  color: #ffffee !important;
-}
-
-/* 제목에 Tailwind 색상 클래스 덮기 */
-.high-contrast .text-blue-900,
-.high-contrast .text-indigo-700,
-.high-contrast .text-green-700,
-.high-contrast .text-gray-700,
-.high-contrast .text-red-600 {
-  color: #ffffff !important;
-}
+      background-color: #000 !important;
+      color: #fefefe !important;
+    }
+    .high-contrast a {
+      color: #00ffff !important;
+      text-decoration: underline !important;
+    }
+    .high-contrast button {
+      background-color: #111 !important;
+      color: #ffff00 !important;
+      border: 2px solid #ffff00 !important;
+    }
+    .high-contrast input,
+    .high-contrast textarea {
+      background-color: #000 !important;
+      color: #ffff00 !important;
+      border: 2px solid #ffff00 !important;
+    }
+    .high-contrast .bg-white,
+    .high-contrast .bg-blue-100,
+    .high-contrast .shadow,
+    .high-contrast .rounded-xl,
+    .high-contrast .rounded-2xl,
+    .high-contrast .p-5,
+    .high-contrast .p-6,
+    .high-contrast section {
+      background-color: #000 !important;
+      color: #fefefe !important;
+      border: 2px solid #ffffff !important;
+      border-radius: 1rem !important;
+    }
+    .high-contrast .border-l-4 {
+      border-left: 4px solid #ffffff !important;
+    }
+    .high-contrast .text-blue-900,
+    .high-contrast .text-blue-600,
+    .high-contrast .text-indigo-700,
+    .high-contrast .text-green-700,
+    .high-contrast .text-gray-700,
+    .high-contrast .text-red-600,
+    .high-contrast .text-red-500 {
+      color: #ffffff !important;
+    }
+    .high-contrast .main-title {
+      background-color: #000 !important;
+      color: #ffffff !important;
+      padding: 0.5rem 1rem;
+      border-radius: 0.75rem;
+      display: inline-block;
+    }
+    /* 모달 고대비 */
+    .high-contrast .modal-content {
+      background-color: #000 !important;
+      color: #ffff00 !important;
+      border: 2px solid #ffffff !important;
+    }
+    .high-contrast .modal-content .close-button {
+      background-color: #333 !important;
+      color: #ffff00 !important;
+      border: 1px solid #ffff00 !important;
+    }
+    .high-contrast .modal-content h3,
+    .high-contrast .modal-content p,
+    .high-contrast .modal-content a {
+      color: #ffff00 !important;
+    }
